@@ -1,7 +1,10 @@
 [package]
-name = "bin"
+name = "apple-music-rich-presence"
 version = "0.1.0"
 edition = "2021"
+authors = ["Death_Blows"]
+description = "A simple CLI tool to display your Apple Music activity in Discord."
+repository = "https://github.com/technorav3nn/apple-music-rich-presence"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

@@ -9,6 +9,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f26201604c87b1e01bd3d98f8d5d9a8fcbb815e8cedb41ffccbeb4bf593a35fe"
 
 [[package]]
+name = "apple-music-rich-presence"
+version = "0.1.0"
+dependencies = [
+ "discord-presence",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "ureq",
+]
+
+[[package]]
 name = "autocfg"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -19,17 +30,6 @@ name = "base64"
 version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9e1b586273c5702936fe7b7d6896644d8be71e6314cfe09d3167c95f712589e8"
-
-[[package]]
-name = "bin"
-version = "0.1.0"
-dependencies = [
- "discord-presence",
- "serde",
- "serde_derive",
- "serde_json",
- "ureq",
-]
 
 [[package]]
 name = "bitflags"
