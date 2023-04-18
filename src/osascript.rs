@@ -15,8 +15,12 @@ where
         .expect("failed to execute process");
 
     let output = String::from_utf8_lossy(&command.stdout);
+
     match serde_json::from_str::<T>(&output) {
-        Ok(ser_output) => Ok(ser_output),
+        Ok(ser_output) => {
+            println!("ser_output");
+            Ok(ser_output)
+        }
         Err(e) => Err(e.to_string()),
     }
 }

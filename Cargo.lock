@@ -13,6 +13,7 @@ name = "apple-music-rich-presence"
 version = "0.1.0"
 dependencies = [
  "discord-presence",
+ "pretty-duration",
  "serde",
  "serde_derive",
  "serde_json",
@@ -288,6 +289,12 @@ name = "pin-project-lite"
 version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e0a7ae3ac2f1173085d398531c705756c94a4c56843785df85a60c1a0afac116"
+
+[[package]]
+name = "pretty-duration"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d8868e7264af614b3634ff0abbe37b178e61000611b8a75221aea40221924aba"
 
 [[package]]
 name = "proc-macro2"

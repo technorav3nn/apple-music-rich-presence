@@ -1,7 +1,4 @@
-use std::collections::HashMap;
-
 use serde::{Deserialize, Deserializer};
-use serde_json::Value;
 
 use crate::osascript::run_osascript_js;
 
@@ -31,9 +28,23 @@ impl<'a> Deserialize<'a> for MusicState {
 }
 
 #[derive(Deserialize, Debug, Clone, PartialEq)]
+pub struct ITunesSearchResult {
+    #[serde(rename = "resultCount")]
+    pub result_count: i32,
+    pub results: Vec<ITunesSearchResultItem>,
+}
+
+#[derive(Deserialize, Debug, Clone, PartialEq)]
+pub struct ITunesSearchResultItem {
+    #[serde(rename = "artworkUrl100")]
+    pub artwork_url_100: String,
+    #[serde(rename = "collectionName")]
+    pub collection_name: String,
+}
+
+#[derive(Deserialize, Debug, Clone, PartialEq)]
 pub struct GetNowPlayingResult {
     pub state: MusicState,
-    pub artist: String,
     pub album: String,
     pub song: String,
     pub duration: f64,
@@ -52,7 +63,7 @@ pub fn get_now_playing() -> Result<GetNowPlayingResult, ()> {
     }
 }
 
-pub fn get_artwork_url(song: &str) -> Result<String, ()> {
+pub fn get_artwork_url(song: &str) -> Option<ITunesSearchResultItem> {
     let res = ureq::get(&format!(
         "https://itunes.apple.com/search?term={}&entity=song",
         song
@@ -61,28 +72,23 @@ pub fn get_artwork_url(song: &str) -> Result<String, ()> {
     .map_err(|_| ())
     .unwrap();
 
-    let json =
-        json_to_hashmap(&res.into_string().unwrap(), vec!["resultCount", "results"]).unwrap();
+    let json = serde_json::from_str::<ITunesSearchResult>(
+        &res.into_string().map_err(|_| ()).unwrap().to_string(),
+    )
+    .map_err(|_| ())
+    .unwrap();
+    let mut result = None;
 
-    let results = json.get("results").unwrap().as_array().unwrap();
-    let artwork = results
-        .first()
-        .unwrap()
-        .get("artworkUrl100")
-        .unwrap()
-        .as_str()
-        .unwrap()
-        .to_string();
-
-    Ok(artwork)
-}
-
-fn json_to_hashmap(json: &String, keys: Vec<&str>) -> Result<HashMap<String, Value>, ()> {
-    let mut lookup: HashMap<String, Value> = serde_json::from_str(json).unwrap();
-    let mut map = HashMap::new();
-    for key in keys {
-        let (k, v) = lookup.remove_entry(key).unwrap();
-        map.insert(k, v);
+    if json.result_count == 1 {
+        result = Some(json.results[0].clone());
+    } else if json.result_count > 1 {
+        // If there are multiple results, find the right album
+        result = json
+            .results
+            .iter()
+            .find(|r| r.collection_name == song)
+            .cloned();
     }
-    Ok(map)
+
+    result
 }
